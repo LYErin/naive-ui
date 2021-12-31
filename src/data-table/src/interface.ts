@@ -4,7 +4,8 @@ import {
   InjectionKey,
   Ref,
   VNodeChild,
-  HTMLAttributes
+  HTMLAttributes,
+  Slots
 } from 'vue'
 import { EllipsisProps } from '../../ellipsis/src/Ellipsis'
 import { NLocale } from '../../locales'
@@ -138,6 +139,8 @@ export type RenderExpand<T = InternalRowData> = (
   row: T,
   index: number
 ) => VNodeChild
+
+// TODO: we should deprecate `index` since it would change after row is expanded
 export type Expandable<T = InternalRowData> = (row: T, index: number) => boolean
 export interface TableExpandColumn<T = InternalRowData>
   extends Omit<TableSelectionColumn<T>, 'type'> {
@@ -159,6 +162,7 @@ export type DataTableSelectionOptions = Array<
 | { label: string, key: string | number, onSelect: () => void }
 >
 export interface DataTableInjection {
+  slots: Slots
   indentRef: Ref<number>
   hasChildrenRef: Ref<boolean>
   firstContentfulColIndexRef: Ref<number>
@@ -174,7 +178,9 @@ export interface DataTableInjection {
   leftFixedColumnsRef: Ref<TableColumns>
   rightFixedColumnsRef: Ref<TableColumns>
   leftActiveFixedColKeyRef: Ref<ColumnKey | null>
+  leftActiveFixedChildrenColKeysRef: Ref<ColumnKey[]>
   rightActiveFixedColKeyRef: Ref<ColumnKey | null>
+  rightActiveFixedChildrenColKeysRef: Ref<ColumnKey[]>
   fixedColumnLeftMapRef: Ref<
   Record<ColumnKey, { start: number, end: number } | undefined>
   >
@@ -206,6 +212,7 @@ export interface DataTableInjection {
   rowPropsRef: Ref<CreateRowProps | undefined>
   flexHeightRef: Ref<boolean>
   headerCheckboxDisabledRef: Ref<boolean>
+  stripedRef: Ref<boolean>
   doUpdateExpandedRowKeys: (keys: RowKey[]) => void
   doUpdateFilters: (
     filters: FilterState,
@@ -290,10 +297,12 @@ export type OnFilterMenuChangeImpl = (
 export interface DataTableInst {
   filter: (filters: FilterState | null) => void
   filters: (filters: FilterState | null) => void
-  clearFilter: () => void
   clearFilters: () => void
+  clearSorter: () => void
   page: (page: number) => void
   sort: (columnKey: ColumnKey, order: SortOrder) => void
+  /** @deprecated it but just leave it here, it does no harm */
+  clearFilter: () => void
 }
 
 export type CreateSummary<T = InternalRowData> = (

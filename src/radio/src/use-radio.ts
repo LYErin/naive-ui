@@ -30,6 +30,9 @@ const radioProps = {
     default: undefined
   },
   size: String as PropType<'small' | 'medium' | 'large'>,
+  onUpdateChecked: [Function, Array] as PropType<
+  undefined | MaybeArray<(value: boolean) => void>
+  >,
   'onUpdate:checked': [Function, Array] as PropType<
   undefined | MaybeArray<(value: boolean) => void>
   >,
@@ -72,9 +75,6 @@ export interface UseRadio {
   handleRadioInputChange: () => void
   handleRadioInputBlur: () => void
   handleRadioInputFocus: () => void
-  handleKeyUp: (e: KeyboardEvent) => void
-  handleMouseDown: () => void
-  handleClick: () => void
 }
 
 function setup (props: ExtractPropTypes<typeof radioProps>): UseRadio {
@@ -128,9 +128,10 @@ function setup (props: ExtractPropTypes<typeof radioProps>): UseRadio {
       const { value } = props
       call(doUpdateValue as OnUpdateValueImpl, value)
     } else {
-      const { 'onUpdate:checked': updateChecked } = props
+      const { onUpdateChecked, 'onUpdate:checked': _onUpdateChecked } = props
       const { nTriggerFormInput, nTriggerFormChange } = formItem
-      if (updateChecked) call(updateChecked, true)
+      if (onUpdateChecked) call(onUpdateChecked, true)
+      if (_onUpdateChecked) call(_onUpdateChecked, true)
       nTriggerFormInput()
       nTriggerFormChange()
       uncontrolledCheckedRef.value = true
@@ -151,24 +152,6 @@ function setup (props: ExtractPropTypes<typeof radioProps>): UseRadio {
   function handleRadioInputFocus (): void {
     focusRef.value = true
   }
-  function handleKeyUp (e: KeyboardEvent): void {
-    switch (e.code) {
-      case 'Enter':
-      case 'NumpadEnter':
-        inputRef.value?.click()
-    }
-  }
-  function handleMouseDown (): void {
-    if (mergedDisabledRef.value) return
-    setTimeout(() => {
-      if (!labelRef.value?.contains(document.activeElement)) {
-        inputRef.value?.focus()
-      }
-    }, 0)
-  }
-  function handleClick (): void {
-    inputRef.value?.click()
-  }
   return {
     mergedClsPrefix: NRadioGroup
       ? NRadioGroup.mergedClsPrefixRef
@@ -183,10 +166,7 @@ function setup (props: ExtractPropTypes<typeof radioProps>): UseRadio {
     mergedSize: mergedSizeRef,
     handleRadioInputChange,
     handleRadioInputBlur,
-    handleRadioInputFocus,
-    handleKeyUp,
-    handleMouseDown,
-    handleClick
+    handleRadioInputFocus
   }
 }
 

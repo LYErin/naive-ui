@@ -41,7 +41,8 @@ import {
   OnBeforeUpload,
   listType,
   OnPreview,
-  CreateThumbnailUrl
+  CreateThumbnailUrl,
+  CustomRequest
 } from './interface'
 import { createImageDataUrl } from './utils'
 import NUploadTrigger from './UploadTrigger'
@@ -56,30 +57,36 @@ function createXhrHandlers (
 ): XhrHandlers {
   const { doChange, XhrMap } = inst
   let percentage = 0
+  function handleXHRError (e: ProgressEvent<EventTarget>): void {
+    const fileAfterChange: FileInfo = Object.assign({}, file, {
+      status: 'error',
+      percentage
+    })
+    XhrMap.delete(file.id)
+    doChange(fileAfterChange, e)
+  }
+  function handleXHRLoad (e: ProgressEvent<EventTarget>): void {
+    if (XHR.status !== 200) {
+      handleXHRError(e)
+      return
+    }
+    let fileAfterChange: FileInfo = Object.assign({}, file, {
+      status: 'finished',
+      percentage,
+      file: null
+    })
+    XhrMap.delete(file.id)
+    fileAfterChange =
+      inst.onFinish?.({ file: fileAfterChange, event: e }) || fileAfterChange
+    doChange(fileAfterChange, e)
+  }
   return {
-    handleXHRLoad (e) {
-      let fileAfterChange: FileInfo = Object.assign({}, file, {
-        status: 'finished',
-        percentage,
-        file: null
-      })
-      XhrMap.delete(file.id)
-      fileAfterChange =
-        inst.onFinish?.({ file: fileAfterChange, event: e }) || fileAfterChange
-      doChange(fileAfterChange, e)
-    },
+    handleXHRLoad,
+    handleXHRError,
     handleXHRAbort (e) {
       const fileAfterChange: FileInfo = Object.assign({}, file, {
         status: 'removed',
         file: null,
-        percentage
-      })
-      XhrMap.delete(file.id)
-      doChange(fileAfterChange, e)
-    },
-    handleXHRError (e) {
-      const fileAfterChange: FileInfo = Object.assign({}, file, {
-        status: 'error',
         percentage
       })
       XhrMap.delete(file.id)
@@ -97,6 +104,54 @@ function createXhrHandlers (
       doChange(fileAfterChange, e)
     }
   }
+}
+
+function customSubmitImpl (options: {
+  inst: UploadInternalInst
+  data?: FuncOrRecordOrUndef
+  headers?: FuncOrRecordOrUndef
+  action?: string
+  withCredentials?: boolean
+  file: FileInfo
+  customRequest: CustomRequest
+}): void {
+  const { inst, file, data, headers, withCredentials, action, customRequest } =
+    options
+  const { doChange } = options.inst
+  let percentage = 0
+  customRequest({
+    file,
+    data,
+    headers,
+    withCredentials,
+    action,
+    onProgress (event) {
+      const fileAfterChange: FileInfo = Object.assign({}, file, {
+        status: 'uploading'
+      })
+      const progress = event.percent
+      fileAfterChange.percentage = progress
+      percentage = progress
+      doChange(fileAfterChange)
+    },
+    onFinish () {
+      let fileAfterChange: FileInfo = Object.assign({}, file, {
+        status: 'finished',
+        percentage,
+        file: null
+      })
+      fileAfterChange =
+        inst.onFinish?.({ file: fileAfterChange }) || fileAfterChange
+      doChange(fileAfterChange)
+    },
+    onError () {
+      const fileAfterChange: FileInfo = Object.assign({}, file, {
+        status: 'error',
+        percentage
+      })
+      doChange(fileAfterChange)
+    }
+  })
 }
 
 function registerHandler (
@@ -190,6 +245,7 @@ const uploadProps = {
   },
   accept: String,
   action: String,
+  customRequest: Function as PropType<CustomRequest>,
   // to be impl
   // directory: {
   //   type: Boolean,
@@ -239,10 +295,7 @@ const uploadProps = {
     type: Boolean,
     default: true
   },
-  showDownloadButton: {
-    type: Boolean,
-    default: false
-  },
+  showDownloadButton: Boolean,
   showRetryButton: {
     type: Boolean,
     default: true
@@ -258,7 +311,11 @@ const uploadProps = {
   onPreview: Function as PropType<OnPreview>,
   createThumbnailUrl: Function as PropType<CreateThumbnailUrl>,
   abstract: Boolean,
-  max: Number
+  max: Number,
+  showTrigger: {
+    type: Boolean,
+    default: true
+  }
 } as const
 
 export type UploadProps = ExtractPublicPropTypes<typeof uploadProps>
@@ -391,22 +448,38 @@ export default defineComponent({
         if (status === 'pending' || (status === 'error' && shouldReupload)) {
           const formData = new FormData()
           formData.append(fieldName, file.file as File)
-          submitImpl(
-            {
-              doChange,
-              XhrMap,
-              onFinish: props.onFinish
-            },
-            file,
-            formData,
-            {
-              method,
+          if (props.customRequest) {
+            customSubmitImpl({
+              inst: {
+                doChange,
+                XhrMap,
+                onFinish: props.onFinish
+              },
+              file,
               action,
               withCredentials,
               headers,
-              data
-            }
-          )
+              data,
+              customRequest: props.customRequest
+            })
+          } else {
+            submitImpl(
+              {
+                doChange,
+                XhrMap,
+                onFinish: props.onFinish
+              },
+              file,
+              formData,
+              {
+                method,
+                action,
+                withCredentials,
+                headers,
+                data
+              }
+            )
+          }
         }
       })
     }
@@ -473,22 +546,22 @@ export default defineComponent({
         }
       } = themeRef.value
       return {
-        '--bezier': cubicBezierEaseInOut,
-        '--border-radius': borderRadius,
-        '--dragger-border': draggerBorder,
-        '--dragger-border-hover': draggerBorderHover,
-        '--dragger-color': draggerColor,
-        '--font-size': fontSize,
-        '--item-color-hover': itemColorHover,
-        '--item-color-hover-error': itemColorHoverError,
-        '--item-disabled-opacity': itemDisabledOpacity,
-        '--item-icon-color': itemIconColor,
-        '--item-text-color': itemTextColor,
-        '--item-text-color-error': itemTextColorError,
-        '--item-text-color-success': itemTextColorSuccess,
-        '--line-height': lineHeight,
-        '--item-border-image-card-error': itemBorderImageCardError,
-        '--item-border-image-card': itemBorderImageCard
+        '--n-bezier': cubicBezierEaseInOut,
+        '--n-border-radius': borderRadius,
+        '--n-dragger-border': draggerBorder,
+        '--n-dragger-border-hover': draggerBorderHover,
+        '--n-dragger-color': draggerColor,
+        '--n-font-size': fontSize,
+        '--n-item-color-hover': itemColorHover,
+        '--n-item-color-hover-error': itemColorHoverError,
+        '--n-item-disabled-opacity': itemDisabledOpacity,
+        '--n-item-icon-color': itemIconColor,
+        '--n-item-text-color': itemTextColor,
+        '--n-item-text-color-error': itemTextColorError,
+        '--n-item-text-color-success': itemTextColorSuccess,
+        '--n-line-height': lineHeight,
+        '--n-item-border-image-card-error': itemBorderImageCardError,
+        '--n-item-border-image-card': itemBorderImageCard
       } as any
     })
 
@@ -517,7 +590,8 @@ export default defineComponent({
       maxReachedRef,
       fileListStyleRef: toRef(props, 'fileListStyle'),
       abstractRef: toRef(props, 'abstract'),
-      cssVarsRef
+      cssVarsRef,
+      showTriggerRef: toRef(props, 'showTrigger')
     })
 
     const exposedMethods: UploadInst = {
@@ -572,7 +646,7 @@ export default defineComponent({
         style={this.cssVars as CSSProperties}
       >
         {inputNode}
-        {this.listType !== 'image-card' && (
+        {this.showTrigger && this.listType !== 'image-card' && (
           <NUploadTrigger>{$slots}</NUploadTrigger>
         )}
         {this.showFileList && <NUploadFileList>{$slots}</NUploadFileList>}

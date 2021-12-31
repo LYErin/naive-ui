@@ -29,6 +29,10 @@ export const enDocRoutes = [
     component: () => import('../pages/docs/customize-theme/enUS/index.md')
   },
   {
+    path: 'community',
+    component: () => import('../pages/docs/community/enUS/index.md')
+  },
+  {
     path: 'i18n',
     component: () => import('../pages/docs/i18n/enUS/index.md')
   },
@@ -59,6 +63,10 @@ export const enDocRoutes = [
   {
     path: 'import-on-demand',
     component: () => import('../pages/docs/import-on-demand/enUS/index.md')
+  },
+  {
+    path: 'style-position',
+    component: () => import('../pages/docs/style-position/enUS/index.md')
   }
 ]
 
@@ -87,6 +95,10 @@ export const zhDocRoutes = [
   {
     path: 'customize-theme',
     component: () => import('../pages/docs/customize-theme/zhCN/index.md')
+  },
+  {
+    path: 'community',
+    component: () => import('../pages/docs/community/zhCN/index.md')
   },
   {
     path: 'i18n',
@@ -123,6 +135,10 @@ export const zhDocRoutes = [
   {
     path: 'import-on-demand',
     component: () => import('../pages/docs/import-on-demand/zhCN/index.md')
+  },
+  {
+    path: 'style-position',
+    component: () => import('../pages/docs/style-position/zhCN/index.md')
   }
 ]
 
@@ -472,6 +488,16 @@ export const enComponentRoutes = [
     path: 'scrollbar',
     component: () =>
       import('../../src/scrollbar/demos/enUS/index.demo-entry.md')
+  },
+  {
+    path: 'countdown',
+    component: () =>
+      import('../../src/countdown/demos/enUS/index.demo-entry.md')
+  },
+  {
+    path: 'number-animation',
+    component: () =>
+      import('../../src/number-animation/demos/enUS/index.demo-entry.md')
   }
 ]
 
@@ -821,6 +847,16 @@ export const zhComponentRoutes = [
     path: 'scrollbar',
     component: () =>
       import('../../src/scrollbar/demos/zhCN/index.demo-entry.md')
+  },
+  {
+    path: 'countdown',
+    component: () =>
+      import('../../src/countdown/demos/zhCN/index.demo-entry.md')
+  },
+  {
+    path: 'number-animation',
+    component: () =>
+      import('../../src/number-animation/demos/zhCN/index.demo-entry.md')
   }
 ]
 

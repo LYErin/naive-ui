@@ -131,6 +131,7 @@ const inputProps = {
   >,
   internalDeactivateOnEnter: Boolean,
   internalForceFocus: Boolean,
+  internalLoadingBeforeSuffix: Boolean,
   /** deprecated */
   showPasswordToggle: Boolean
 }
@@ -201,7 +202,6 @@ export default defineComponent({
         return [placeholder] as [string]
       }
     })
-
     const showPlaceholder1Ref = computed(() => {
       const { value: isComposing } = isComposingRef
       const { value: mergedValue } = mergedValueRef
@@ -493,8 +493,10 @@ export default defineComponent({
       doClear(e)
       if (props.pair) {
         doUpdateValue(['', ''])
+        doChange(['', ''])
       } else {
         doUpdateValue('')
+        doChange('')
       }
     }
     function handleMouseDown (e: MouseEvent): void {
@@ -605,6 +607,10 @@ export default defineComponent({
         ;(document.activeElement as HTMLElement).blur()
       }
     }
+    function select (): void {
+      textareaElRef.value?.select()
+      inputElRef.value?.select()
+    }
     function activate (): void {
       if (mergedDisabledRef.value) return
       if (textareaElRef.value) textareaElRef.value.focus()
@@ -670,6 +676,7 @@ export default defineComponent({
       isCompositing: isComposingRef,
       focus,
       blur,
+      select,
       deactivate,
       activate
     }
@@ -773,56 +780,56 @@ export default defineComponent({
         } = themeRef.value
         const { left: paddingLeft, right: paddingRight } = getPadding(padding)
         return {
-          '--bezier': cubicBezierEaseInOut,
-          '--count-text-color': countTextColor,
-          '--color': color,
-          '--font-size': fontSize,
-          '--border-radius': borderRadius,
-          '--height': height,
-          '--padding-left': paddingLeft,
-          '--padding-right': paddingRight,
-          '--text-color': textColor,
-          '--caret-color': caretColor,
-          '--text-decoration-color': textDecorationColor,
-          '--border': border,
-          '--border-disabled': borderDisabled,
-          '--border-hover': borderHover,
-          '--border-focus': borderFocus,
-          '--placeholder-color': placeholderColor,
-          '--placeholder-color-disabled': placeholderColorDisabled,
-          '--icon-size': iconSize,
-          '--line-height-textarea': lineHeightTextarea,
-          '--color-disabled': colorDisabled,
-          '--color-focus': colorFocus,
-          '--text-color-disabled': textColorDisabled,
-          '--box-shadow-focus': boxShadowFocus,
-          '--loading-color': loadingColor,
+          '--n-bezier': cubicBezierEaseInOut,
+          '--n-count-text-color': countTextColor,
+          '--n-color': color,
+          '--n-font-size': fontSize,
+          '--n-border-radius': borderRadius,
+          '--n-height': height,
+          '--n-padding-left': paddingLeft,
+          '--n-padding-right': paddingRight,
+          '--n-text-color': textColor,
+          '--n-caret-color': caretColor,
+          '--n-text-decoration-color': textDecorationColor,
+          '--n-border': border,
+          '--n-border-disabled': borderDisabled,
+          '--n-border-hover': borderHover,
+          '--n-border-focus': borderFocus,
+          '--n-placeholder-color': placeholderColor,
+          '--n-placeholder-color-disabled': placeholderColorDisabled,
+          '--n-icon-size': iconSize,
+          '--n-line-height-textarea': lineHeightTextarea,
+          '--n-color-disabled': colorDisabled,
+          '--n-color-focus': colorFocus,
+          '--n-text-color-disabled': textColorDisabled,
+          '--n-box-shadow-focus': boxShadowFocus,
+          '--n-loading-color': loadingColor,
           // form warning
-          '--caret-color-warning': caretColorWarning,
-          '--color-focus-warning': colorFocusWarning,
-          '--box-shadow-focus-warning': boxShadowFocusWarning,
-          '--border-warning': borderWarning,
-          '--border-focus-warning': borderFocusWarning,
-          '--border-hover-warning': borderHoverWarning,
-          '--loading-color-warning': loadingColorWarning,
+          '--n-caret-color-warning': caretColorWarning,
+          '--n-color-focus-warning': colorFocusWarning,
+          '--n-box-shadow-focus-warning': boxShadowFocusWarning,
+          '--n-border-warning': borderWarning,
+          '--n-border-focus-warning': borderFocusWarning,
+          '--n-border-hover-warning': borderHoverWarning,
+          '--n-loading-color-warning': loadingColorWarning,
           // form error
-          '--caret-color-error': caretColorError,
-          '--color-focus-error': colorFocusError,
-          '--box-shadow-focus-error': boxShadowFocusError,
-          '--border-error': borderError,
-          '--border-focus-error': borderFocusError,
-          '--border-hover-error': borderHoverError,
-          '--loading-color-error': loadingColorError,
+          '--n-caret-color-error': caretColorError,
+          '--n-color-focus-error': colorFocusError,
+          '--n-box-shadow-focus-error': boxShadowFocusError,
+          '--n-border-error': borderError,
+          '--n-border-focus-error': borderFocusError,
+          '--n-border-hover-error': borderHoverError,
+          '--n-loading-color-error': loadingColorError,
           // clear-button
-          '--clear-color': clearColor,
-          '--clear-size': clearSize,
-          '--clear-color-hover': clearColorHover,
-          '--clear-color-pressed': clearColorPressed,
-          '--icon-color': iconColor,
-          '--icon-color-hover': iconColorHover,
-          '--icon-color-pressed': iconColorPressed,
-          '--icon-color-disabled': iconColorDisabled,
-          '--suffix-text-color': suffixTextColor
+          '--n-clear-color': clearColor,
+          '--n-clear-size': clearSize,
+          '--n-clear-color-hover': clearColorHover,
+          '--n-clear-color-pressed': clearColorPressed,
+          '--n-icon-color': iconColor,
+          '--n-icon-color-hover': iconColorHover,
+          '--n-icon-color-pressed': iconColorPressed,
+          '--n-icon-color-disabled': iconColorDisabled,
+          '--n-suffix-text-color': suffixTextColor
         }
       })
     }
@@ -921,8 +928,6 @@ export default defineComponent({
           ) : (
             <div class={`${mergedClsPrefix}-input__input`}>
               <input
-                {...this.inputProps}
-                ref="inputElRef"
                 type={
                   this.type === 'password' &&
                   this.mergedShowPasswordOn &&
@@ -930,7 +935,10 @@ export default defineComponent({
                     ? 'text'
                     : this.type
                 }
+                {...this.inputProps}
+                ref="inputElRef"
                 class={`${mergedClsPrefix}-input__input-el`}
+                style={this.textDecorationStyle[0] as any}
                 tabindex={
                   this.passivelyActivated && !this.activated ? -1 : undefined
                 }
@@ -946,7 +954,6 @@ export default defineComponent({
                 readonly={this.readonly as any}
                 autofocus={this.autofocus}
                 size={this.attrSize}
-                style={this.textDecorationStyle[0] as any}
                 onBlur={this.handleInputBlur}
                 onFocus={this.handleInputFocus}
                 onInput={(e) => this.handleInput(e, 0)}
@@ -985,7 +992,9 @@ export default defineComponent({
                     {{ default: () => renderSlot(this.$slots, 'clear') }}
                   </NBaseClear>
                 ) : null,
-                renderSlot(this.$slots, 'suffix'),
+                !this.internalLoadingBeforeSuffix
+                  ? renderSlot(this.$slots, 'suffix')
+                  : null,
                 this.loading !== undefined ? (
                   <NBaseSuffix
                     clsPrefix={mergedClsPrefix}
@@ -995,6 +1004,9 @@ export default defineComponent({
                     style={this.cssVars as CSSProperties}
                   />
                 ) : null,
+                this.internalLoadingBeforeSuffix
+                  ? renderSlot(this.$slots, 'suffix')
+                  : null,
                 this.showCount && this.type !== 'textarea' ? (
                   <WordCount>{{ default: this.$slots.count }}</WordCount>
                 ) : null,

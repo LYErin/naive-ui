@@ -1,4 +1,4 @@
-# Expand Rows
+# Expand rows
 
 ```html
 <n-data-table :columns="columns" :data="data" :pagination="pagination" />
@@ -15,7 +15,7 @@ const createColumns = ({ sendMail }) => {
     },
     {
       type: 'expand',
-      expandable: (_, index) => index !== 1,
+      expandable: (rowData) => rowData.name !== 'Jim Green',
       renderExpand: (rowData) => {
         return `${rowData.name} is a good guy.`
       }

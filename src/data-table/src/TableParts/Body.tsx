@@ -9,16 +9,23 @@ import {
   onUnmounted,
   PropType,
   CSSProperties,
-  computed
+  computed,
+  renderSlot,
+  Fragment
 } from 'vue'
 import { pxfy, repeat } from 'seemly'
-import { VirtualList, VirtualListInst } from 'vueuc'
+import { VirtualList, VirtualListInst, VResizeObserver } from 'vueuc'
+import { CNode } from 'css-render'
+import { useMemo } from 'vooks'
+import { cssrAnchorMetaName } from '../../../_mixins/common'
 import { c } from '../../../_utils/cssr'
 import { NScrollbar, ScrollbarInst } from '../../../_internal'
 import { formatLength } from '../../../_utils'
+import { NEmpty } from '../../../empty'
 import {
   dataTableInjectionKey,
   RowKey,
+  ColumnKey,
   SummaryRowData,
   MainTableBodyRef,
   TmNode
@@ -30,33 +37,58 @@ import RenderSafeCheckbox from './BodyCheckbox'
 import TableHeader from './Header'
 import type { ColItem } from '../use-group-header'
 
+interface NormalRowRenderInfo {
+  striped: boolean
+  tmNode: TmNode
+  key: RowKey
+}
+
 type RowRenderInfo =
   | {
-    summary: true
-    rawNode: SummaryRowData
+    isSummaryRow: true
     key: RowKey
-    disabled: boolean
+    tmNode: {
+      rawNode: SummaryRowData
+      disabled: boolean
+    }
   }
-  | TmNode
+  | NormalRowRenderInfo
   | {
     isExpandedRow: true
     tmNode: TmNode
     key: RowKey
   }
 
-function flatten (rows: TmNode[], expandedRowKeys: Set<RowKey>): TmNode[] {
-  const fRows: TmNode[] = []
+function flatten (
+  rowInfos: NormalRowRenderInfo[],
+  expandedRowKeys: Set<RowKey>
+): NormalRowRenderInfo[] {
+  const fRows: NormalRowRenderInfo[] = []
   function traverse (rs: TmNode[]): void {
     rs.forEach((r) => {
       if (r.children && expandedRowKeys.has(r.key)) {
-        fRows.push(r)
+        fRows.push({
+          tmNode: r,
+          striped: false,
+          key: r.key
+        })
         traverse(r.children)
       } else {
-        fRows.push(r)
+        fRows.push({
+          key: r.key,
+          tmNode: r,
+          striped: false
+        })
       }
     })
   }
-  traverse(rows)
+  rowInfos.forEach((rowInfo) => {
+    fRows.push(rowInfo)
+    const { children } = rowInfo.tmNode
+    if (children && expandedRowKeys.has(rowInfo.key)) {
+      traverse(children)
+    }
+  })
   return fRows
 }
 
@@ -104,10 +136,12 @@ export default defineComponent({
   props: {
     onResize: Function as PropType<(e: ResizeObserverEntry) => void>,
     showHeader: Boolean,
-    flexHeight: Boolean
+    flexHeight: Boolean,
+    bodyStyle: Object as PropType<CSSProperties>
   },
   setup (props) {
     const {
+      slots: dataTableSlots,
       mergedExpandedRowKeysRef,
       mergedClsPrefixRef,
       mergedThemeRef,
@@ -120,7 +154,9 @@ export default defineComponent({
       mergedCurrentPageRef,
       rowClassNameRef,
       leftActiveFixedColKeyRef,
+      leftActiveFixedChildrenColKeysRef,
       rightActiveFixedColKeyRef,
+      rightActiveFixedChildrenColKeysRef,
       renderExpandRef,
       hoverKeyRef,
       summaryRef,
@@ -134,6 +170,8 @@ export default defineComponent({
       indentRef,
       rowPropsRef,
       maxHeightRef,
+      stripedRef,
+      loadingRef,
       setHeaderScrollLeft,
       doUpdateExpandedRowKeys,
       handleTableBodyScroll,
@@ -143,6 +181,17 @@ export default defineComponent({
     } = inject(dataTableInjectionKey)!
     const scrollbarInstRef = ref<ScrollbarInst | null>(null)
     const virtualListRef = ref<VirtualListInst | null>(null)
+    const emptyElRef = ref<HTMLElement | null>(null)
+    const emptyRef = useMemo(() => paginatedDataRef.value.length === 0)
+    // If header is not inside & empty is displayed, no table part would be
+    // shown. So to collect a body width, we need to put a ref on empty element
+    const shouldDisplaySomeTablePartRef = useMemo(
+      () => props.showHeader || !emptyRef.value
+    )
+    // If no body is shown, we shouldn't show scrollbar
+    const bodyShowHeaderOnlyRef = useMemo(() => {
+      return props.showHeader || emptyRef.value
+    })
     let lastSelectedKey: string | number = ''
     const mergedExpandedRowKeySetRef = computed(() => {
       return new Set(mergedExpandedRowKeysRef.value)
@@ -186,6 +235,14 @@ export default defineComponent({
       lastSelectedKey = tmNode.key
     }
     function getScrollContainer (): HTMLElement | null {
+      if (!shouldDisplaySomeTablePartRef.value) {
+        const { value: emptyEl } = emptyElRef
+        if (emptyEl) {
+          return emptyEl
+        } else {
+          return null
+        }
+      }
       if (virtualScrollRef.value) {
         return virtualListContainer()
       }
@@ -230,32 +287,58 @@ export default defineComponent({
     const exposedMethods: MainTableBodyRef = {
       getScrollContainer
     }
+
+    interface StyleCProps {
+      leftActiveFixedColKey: ColumnKey | null
+      leftActiveFixedChildrenColKeys: ColumnKey[]
+      rightActiveFixedColKey: ColumnKey | null
+      rightActiveFixedChildrenColKeys: ColumnKey[]
+      componentId: string
+    }
+
     // manually control shadow style to avoid rerender
     const style = c([
-      ({ props: cProps }: { props: Record<string, string> }) =>
-        c([
-          cProps.leftActiveFixedColKey === null
-            ? null
-            : c(
-                `[data-n-id="${cProps.componentId}"] [data-col-key="${cProps.leftActiveFixedColKey}"]::after`,
-                {
-                  boxShadow: 'var(--box-shadow-after)'
-                }
-            ),
-          cProps.rightActiveFixedColKey === null
-            ? null
-            : c(
-                `[data-n-id="${cProps.componentId}"] [data-col-key="${cProps.rightActiveFixedColKey}"]::before`,
-                {
-                  boxShadow: 'var(--box-shadow-before)'
-                }
-            )
+      ({ props: cProps }: { props: StyleCProps }) => {
+        const createActiveLeftFixedStyle = (
+          leftActiveFixedColKey: ColumnKey | null
+        ): CNode | null => {
+          if (leftActiveFixedColKey === null) return null
+          return c(
+            `[data-n-id="${cProps.componentId}"] [data-col-key="${leftActiveFixedColKey}"]::after`,
+            { boxShadow: 'var(--n-box-shadow-after)' }
+          )
+        }
+
+        const createActiveRightFixedStyle = (
+          rightActiveFixedColKey: ColumnKey | null
+        ): CNode | null => {
+          if (rightActiveFixedColKey === null) return null
+          return c(
+            `[data-n-id="${cProps.componentId}"] [data-col-key="${rightActiveFixedColKey}"]::before`,
+            { boxShadow: 'var(--n-box-shadow-before)' }
+          )
+        }
+
+        return c([
+          createActiveLeftFixedStyle(cProps.leftActiveFixedColKey),
+          createActiveRightFixedStyle(cProps.rightActiveFixedColKey),
+          cProps.leftActiveFixedChildrenColKeys.map((leftActiveFixedColKey) =>
+            createActiveLeftFixedStyle(leftActiveFixedColKey)
+          ),
+          cProps.rightActiveFixedChildrenColKeys.map((rightActiveFixedColKey) =>
+            createActiveRightFixedStyle(rightActiveFixedColKey)
+          )
         ])
+      }
     ])
     let fixedStyleMounted = false
     watchEffect(() => {
       const { value: leftActiveFixedColKey } = leftActiveFixedColKeyRef
+      const { value: leftActiveFixedChildrenColKeys } =
+        leftActiveFixedChildrenColKeysRef
       const { value: rightActiveFixedColKey } = rightActiveFixedColKeyRef
+      const { value: rightActiveFixedChildrenColKeys } =
+        rightActiveFixedChildrenColKeysRef
       if (
         !fixedStyleMounted &&
         leftActiveFixedColKey === null &&
@@ -263,14 +346,19 @@ export default defineComponent({
       ) {
         return
       }
+
+      const cProps: StyleCProps = {
+        leftActiveFixedColKey,
+        leftActiveFixedChildrenColKeys,
+        rightActiveFixedColKey,
+        rightActiveFixedChildrenColKeys,
+        componentId
+      }
       style.mount({
         id: `n-${componentId}`,
         force: true,
-        props: {
-          leftActiveFixedColKey,
-          rightActiveFixedColKey,
-          componentId
-        }
+        props: cProps,
+        anchorMetaName: cssrAnchorMetaName
       })
       fixedStyleMounted = true
     })
@@ -280,15 +368,40 @@ export default defineComponent({
       })
     })
     return {
+      dataTableSlots,
       componentId,
       scrollbarInstRef,
       virtualListRef,
+      emptyElRef,
       summary: summaryRef,
       mergedClsPrefix: mergedClsPrefixRef,
       mergedTheme: mergedThemeRef,
       scrollX: scrollXRef,
       cols: colsRef,
-      paginatedData: paginatedDataRef,
+      loading: loadingRef,
+      bodyShowHeaderOnly: bodyShowHeaderOnlyRef,
+      shouldDisplaySomeTablePart: shouldDisplaySomeTablePartRef,
+      empty: emptyRef,
+      paginatedData: computed(() => {
+        const { value: striped } = stripedRef
+        return paginatedDataRef.value.map(
+          striped
+            ? (tmNode, index) => {
+                return {
+                  tmNode,
+                  key: tmNode.key,
+                  striped: index % 2 === 1
+                }
+              }
+            : (tmNode) => {
+                return {
+                  tmNode,
+                  key: tmNode.key,
+                  striped: false
+                }
+              }
+        )
+      }),
       rawPaginatedData: rawPaginatedDataRef,
       fixedColumnLeftMap: fixedColumnLeftMapRef,
       fixedColumnRightMap: fixedColumnRightMapRef,
@@ -344,11 +457,13 @@ export default defineComponent({
       minWidth: formatLength(scrollX) || '100%'
     }
     if (scrollX) contentStyle.width = '100%'
-    return (
+
+    const tableNode = (
       <NScrollbar
         ref="scrollbarInstRef"
         scrollable={scrollable || isBasicAutoLayout}
         class={`${mergedClsPrefix}-data-table-base-table-body`}
+        style={this.bodyStyle}
         theme={mergedTheme.peers.Scrollbar}
         themeOverrides={mergedTheme.peerOverrides.Scrollbar}
         contentStyle={contentStyle}
@@ -378,7 +493,6 @@ export default defineComponent({
               mergedSortState,
               mergedExpandedRowKeySet,
               componentId,
-              showHeader,
               hasChildren,
               firstContentfulColIndex,
               rowProps,
@@ -390,10 +504,6 @@ export default defineComponent({
               handleUpdateExpanded
             } = this
             const { length: colCount } = cols
-            const rowIndexToKey: Record<number, RowKey> = {}
-            paginatedData.forEach((tmNode, rowIndex) => {
-              rowIndexToKey[rowIndex] = tmNode.key
-            })
 
             let mergedData: RowRenderInfo[]
 
@@ -409,20 +519,24 @@ export default defineComponent({
                 mergedData = [
                   ...mergedPaginationData,
                   ...summaryRows.map((row, i) => ({
-                    summary: true as const,
-                    rawNode: row,
+                    isSummaryRow: true as const,
                     key: `__n_summary__${i}`,
-                    disabled: true
+                    tmNode: {
+                      rawNode: row,
+                      disabled: true
+                    }
                   }))
                 ]
               } else {
                 mergedData = [
                   ...mergedPaginationData,
                   {
-                    summary: true,
-                    rawNode: summaryRows,
+                    isSummaryRow: true,
                     key: '__n_summary__',
-                    disabled: true
+                    tmNode: {
+                      rawNode: summaryRows,
+                      disabled: true
+                    }
                   }
                 ]
               }
@@ -434,7 +548,26 @@ export default defineComponent({
               ? { width: pxfy(this.indent) }
               : undefined
 
-            const { length: rowCount } = mergedData
+            // Tile the data of the expanded row
+            const displayedData: RowRenderInfo[] = []
+            mergedData.forEach((rowInfo) => {
+              if (renderExpand && mergedExpandedRowKeySet.has(rowInfo.key)) {
+                displayedData.push(rowInfo, {
+                  isExpandedRow: true,
+                  key: rowInfo.key,
+                  tmNode: rowInfo.tmNode as TmNode
+                })
+              } else {
+                displayedData.push(rowInfo)
+              }
+            })
+
+            const { length: rowCount } = displayedData
+
+            const rowIndexToKey: Record<number, RowKey> = {}
+            paginatedData.forEach(({ tmNode }, rowIndex) => {
+              rowIndexToKey[rowIndex] = tmNode.key
+            })
 
             const renderRow = (
               rowInfo: RowRenderInfo,
@@ -464,9 +597,11 @@ export default defineComponent({
                   </tr>
                 )
               }
-              const { rawNode: rowData, key: rowKey } = rowInfo
-              const isSummary = 'summary' in rowInfo
-              const expanded = mergedExpandedRowKeySet.has(rowInfo.key)
+              const isSummary = 'isSummaryRow' in rowInfo
+              const striped = !isSummary && rowInfo.striped
+              const { tmNode, key: rowKey } = rowInfo
+              const { rawNode: rowData } = tmNode
+              const expanded = mergedExpandedRowKeySet.has(rowKey)
               const props = rowProps ? rowProps(rowData, rowIndex) : undefined
               const mergedRowClassName =
                 typeof rowClassName === 'string'
@@ -480,6 +615,8 @@ export default defineComponent({
                   key={rowKey}
                   class={[
                     `${mergedClsPrefix}-data-table-tr`,
+                    isSummary && `${mergedClsPrefix}-data-table-tr--summary`,
+                    striped && `${mergedClsPrefix}-data-table-tr--striped`,
                     mergedRowClassName
                   ]}
                   {...props}
@@ -500,12 +637,12 @@ export default defineComponent({
                     const colKey = getColKey(col)
                     const { rowSpan, colSpan } = column
                     const mergedColSpan = isSummary
-                      ? rowInfo.rawNode[colKey]?.colSpan || 1 // optional for #1276
+                      ? rowInfo.tmNode.rawNode[colKey]?.colSpan || 1 // optional for #1276
                       : colSpan
                         ? colSpan(rowData, rowIndex)
                         : 1
                     const mergedRowSpan = isSummary
-                      ? rowInfo.rawNode[colKey]?.rowSpan || 1 // optional for #1276
+                      ? rowInfo.tmNode.rawNode[colKey]?.rowSpan || 1 // optional for #1276
                       : rowSpan
                         ? rowSpan(rowData, rowIndex)
                         : 1
@@ -585,13 +722,13 @@ export default defineComponent({
                         {hasChildren && colIndex === firstContentfulColIndex
                           ? [
                               repeat(
-                                isSummary ? 0 : rowInfo.level,
+                                isSummary ? 0 : rowInfo.tmNode.level,
                                 <div
                                   class={`${mergedClsPrefix}-data-table-indent`}
                                   style={indentStyle}
                                 />
                               ),
-                              isSummary || !rowInfo.children ? (
+                              isSummary || !rowInfo.tmNode.children ? (
                                 <div
                                   class={`${mergedClsPrefix}-data-table-expand-placeholder`}
                                 />
@@ -612,10 +749,10 @@ export default defineComponent({
                             <RenderSafeCheckbox
                               key={currentPage}
                               rowKey={rowKey}
-                              disabled={rowInfo.disabled}
+                              disabled={rowInfo.tmNode.disabled}
                               onUpdateChecked={(checked: boolean, e) =>
                                 handleCheckboxUpdateChecked(
-                                  rowInfo,
+                                  rowInfo.tmNode,
                                   checked,
                                   e.shiftKey
                                 )
@@ -651,20 +788,6 @@ export default defineComponent({
               return row
             }
 
-            // Tile the data of the expanded row
-            const displayedData: RowRenderInfo[] = []
-            mergedData.forEach((rowInfo) => {
-              if (renderExpand && mergedExpandedRowKeySet.has(rowInfo.key)) {
-                displayedData.push(rowInfo, {
-                  isExpandedRow: true,
-                  key: rowInfo.key,
-                  tmNode: rowInfo as TmNode
-                })
-              } else {
-                displayedData.push(rowInfo)
-              }
-            })
-
             if (!virtualScroll) {
               return (
                 <table
@@ -680,15 +803,17 @@ export default defineComponent({
                       <col key={col.key} style={col.style}></col>
                     ))}
                   </colgroup>
-                  {showHeader ? <TableHeader discrete={false} /> : null}
-                  <tbody
-                    data-n-id={componentId}
-                    class={`${mergedClsPrefix}-data-table-tbody`}
-                  >
-                    {displayedData.map((rowInfo, rowIndex) => {
-                      return renderRow(rowInfo, rowIndex, false)
-                    })}
-                  </tbody>
+                  {this.showHeader ? <TableHeader discrete={false} /> : null}
+                  {!this.empty ? (
+                    <tbody
+                      data-n-id={componentId}
+                      class={`${mergedClsPrefix}-data-table-tbody`}
+                    >
+                      {displayedData.map((rowInfo, rowIndex) => {
+                        return renderRow(rowInfo, rowIndex, false)
+                      })}
+                    </tbody>
+                  ) : null}
                 </table>
               )
             } else {
@@ -727,5 +852,40 @@ export default defineComponent({
         }}
       </NScrollbar>
     )
+
+    if (this.empty) {
+      const createEmptyNode = (): VNode => (
+        <div
+          class={[
+            `${mergedClsPrefix}-data-table-empty`,
+            this.loading && `${mergedClsPrefix}-data-table-empty--hide`
+          ]}
+          style={this.bodyStyle}
+          ref="emptyElRef"
+        >
+          {renderSlot(this.dataTableSlots, 'empty', undefined, () => [
+            <NEmpty
+              theme={this.mergedTheme.peers.Empty}
+              themeOverrides={this.mergedTheme.peerOverrides.Empty}
+            />
+          ])}
+        </div>
+      )
+      if (this.shouldDisplaySomeTablePart) {
+        return (
+          <>
+            {tableNode}
+            {createEmptyNode()}
+          </>
+        )
+      } else {
+        return (
+          <VResizeObserver onResize={this.onResize}>
+            {{ default: createEmptyNode }}
+          </VResizeObserver>
+        )
+      }
+    }
+    return tableNode
   }
 })

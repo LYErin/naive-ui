@@ -30,7 +30,13 @@ import style from './styles/index.cssr'
 import { call, ExtractPublicPropTypes, MaybeArray, warn } from '../../_utils'
 import type { Size as InputSize } from '../../input/src/interface'
 import type { Size as SelectSize } from '../../select/src/interface'
-import { RenderPrefix, RenderSuffix, RenderPrev, RenderNext } from './interface'
+import {
+  RenderPrefix,
+  RenderSuffix,
+  RenderPrev,
+  RenderNext,
+  PaginationSizeOption
+} from './interface'
 
 const paginationProps = {
   ...(useTheme.props as ThemeProps<PaginationTheme>),
@@ -47,9 +53,12 @@ const paginationProps = {
   },
   showSizePicker: Boolean,
   pageSize: Number as PropType<number>,
-  defaultPageSize: Number,
+  defaultPageSize: {
+    type: Number,
+    default: 10
+  },
   pageSizes: {
-    type: Array as PropType<number[]>,
+    type: Array as PropType<Array<number | PaginationSizeOption>>,
     default () {
       return [10]
     }
@@ -114,9 +123,7 @@ export default defineComponent({
     const jumperRef = ref<InputInst | null>(null)
     const jumperValueRef = ref('')
     const uncontrolledPageRef = ref(props.defaultPage)
-    const uncontrolledPageSizeRef = ref(
-      props.defaultPageSize || props.pageSizes[0]
-    )
+    const uncontrolledPageSizeRef = ref(props.defaultPageSize)
     const mergedPageRef = useMergedState(
       toRef(props, 'page'),
       uncontrolledPageRef
@@ -140,10 +147,16 @@ export default defineComponent({
 
     const pageSizeOptionsRef = computed(() => {
       const suffix = localeRef.value.selectionSuffix
-      return props.pageSizes.map((size) => ({
-        label: `${size} / ${suffix}`,
-        value: size
-      }))
+      return props.pageSizes.map((size) => {
+        if (typeof size === 'number') {
+          return {
+            label: `${size} / ${suffix}`,
+            value: size
+          }
+        } else {
+          return size
+        }
+      })
     })
     const inputSizeRef = computed<InputSize>(() => {
       return (
@@ -167,6 +180,11 @@ export default defineComponent({
         return endIndex > itemCount ? itemCount : endIndex
       }
       return endIndex
+    })
+    const mergedItemCountRef = computed(() => {
+      const { itemCount } = props
+      if (itemCount !== undefined) return itemCount
+      return (props.pageCount || 1) * mergedPageSizeRef.value
     })
 
     const disableTransitionOneTick = (): void => {
@@ -306,6 +324,7 @@ export default defineComponent({
       pageItems: computed(() =>
         pageItems(mergedPageRef.value, mergedPageCountRef.value, props.pageSlot)
       ),
+      mergedItemCount: mergedItemCountRef,
       jumperValue: jumperValueRef,
       pageSizeOptions: pageSizeOptionsRef,
       mergedPageSize: mergedPageSizeRef,
@@ -370,47 +389,47 @@ export default defineComponent({
           common: { cubicBezierEaseInOut }
         } = themeRef.value
         return {
-          '--prefix-margin': prefixMargin,
-          '--suffix-margin': suffixMargin,
-          '--item-font-size': itemFontSize,
-          '--select-width': selectWidth,
-          '--select-margin': selectMargin,
-          '--input-width': inputWidth,
-          '--input-margin': inputMargin,
-          '--item-size': itemSize,
-          '--item-text-color': itemTextColor,
-          '--item-text-color-disabled': itemTextColorDisabled,
-          '--item-text-color-hover': itemTextColorHover,
-          '--item-text-color-active': itemTextColorActive,
-          '--item-text-color-pressed': itemTextColorPressed,
-          '--item-color': itemColor,
-          '--item-color-hover': itemColorHover,
-          '--item-color-disabled': itemColorDisabled,
-          '--item-color-active': itemColorActive,
-          '--item-color-active-hover': itemColorActiveHover,
-          '--item-color-pressed': itemColorPressed,
-          '--item-border': itemBorder,
-          '--item-border-hover': itemBorderHover,
-          '--item-border-disabled': itemBorderDisabled,
-          '--item-border-active': itemBorderActive,
-          '--item-border-pressed': itemBorderPressed,
-          '--item-padding': itemPadding,
-          '--item-border-radius': itemBorderRadius,
-          '--bezier': cubicBezierEaseInOut,
-          '--jumper-font-size': jumperFontSize,
-          '--jumper-text-color': jumperTextColor,
-          '--jumper-text-color-disabled': jumperTextColorDisabled,
-          '--item-margin': itemMargin,
-          '--button-icon-size': buttonIconSize,
-          '--button-icon-color': buttonIconColor,
-          '--button-icon-color-hover': buttonIconColorHover,
-          '--button-icon-color-pressed': buttonIconColorPressed,
-          '--button-color-hover': buttonColorHover,
-          '--button-color': buttonColor,
-          '--button-color-pressed': buttonColorPressed,
-          '--button-border': buttonBorder,
-          '--button-border-hover': buttonBorderHover,
-          '--button-border-pressed': buttonBorderPressed
+          '--n-prefix-margin': prefixMargin,
+          '--n-suffix-margin': suffixMargin,
+          '--n-item-font-size': itemFontSize,
+          '--n-select-width': selectWidth,
+          '--n-select-margin': selectMargin,
+          '--n-input-width': inputWidth,
+          '--n-input-margin': inputMargin,
+          '--n-item-size': itemSize,
+          '--n-item-text-color': itemTextColor,
+          '--n-item-text-color-disabled': itemTextColorDisabled,
+          '--n-item-text-color-hover': itemTextColorHover,
+          '--n-item-text-color-active': itemTextColorActive,
+          '--n-item-text-color-pressed': itemTextColorPressed,
+          '--n-item-color': itemColor,
+          '--n-item-color-hover': itemColorHover,
+          '--n-item-color-disabled': itemColorDisabled,
+          '--n-item-color-active': itemColorActive,
+          '--n-item-color-active-hover': itemColorActiveHover,
+          '--n-item-color-pressed': itemColorPressed,
+          '--n-item-border': itemBorder,
+          '--n-item-border-hover': itemBorderHover,
+          '--n-item-border-disabled': itemBorderDisabled,
+          '--n-item-border-active': itemBorderActive,
+          '--n-item-border-pressed': itemBorderPressed,
+          '--n-item-padding': itemPadding,
+          '--n-item-border-radius': itemBorderRadius,
+          '--n-bezier': cubicBezierEaseInOut,
+          '--n-jumper-font-size': jumperFontSize,
+          '--n-jumper-text-color': jumperTextColor,
+          '--n-jumper-text-color-disabled': jumperTextColorDisabled,
+          '--n-item-margin': itemMargin,
+          '--n-button-icon-size': buttonIconSize,
+          '--n-button-icon-color': buttonIconColor,
+          '--n-button-icon-color-hover': buttonIconColorHover,
+          '--n-button-icon-color-pressed': buttonIconColorPressed,
+          '--n-button-color-hover': buttonColorHover,
+          '--n-button-color': buttonColor,
+          '--n-button-color-pressed': buttonColorPressed,
+          '--n-button-border': buttonBorder,
+          '--n-button-border-hover': buttonBorderHover,
+          '--n-button-border-pressed': buttonBorderPressed
         }
       })
     }
@@ -470,7 +489,7 @@ export default defineComponent({
               pageCount: mergedPageCount,
               startIndex: this.startIndex,
               endIndex: this.endIndex,
-              itemCount: this.itemCount
+              itemCount: this.mergedItemCount
             })}
           </div>
         ) : null}
@@ -490,7 +509,7 @@ export default defineComponent({
               pageCount: mergedPageCount,
               startIndex: this.startIndex,
               endIndex: this.endIndex,
-              itemCount: this.itemCount
+              itemCount: this.mergedItemCount
             })
           ) : (
             <NBaseIcon clsPrefix={mergedClsPrefix}>
@@ -556,7 +575,7 @@ export default defineComponent({
               page: mergedPage,
               pageSize: mergedPageSize,
               pageCount: mergedPageCount,
-              itemCount: this.itemCount,
+              itemCount: this.mergedItemCount,
               startIndex: this.startIndex,
               endIndex: this.endIndex
             })
@@ -604,7 +623,7 @@ export default defineComponent({
               pageCount: mergedPageCount,
               startIndex: this.startIndex,
               endIndex: this.endIndex,
-              itemCount: this.itemCount
+              itemCount: this.mergedItemCount
             })}
           </div>
         ) : null}

@@ -1,4 +1,15 @@
-import { h, defineComponent, computed, PropType, CSSProperties, ref } from 'vue'
+import {
+  h,
+  defineComponent,
+  computed,
+  PropType,
+  CSSProperties,
+  ref,
+  InjectionKey,
+  Ref,
+  provide,
+  toRef
+} from 'vue'
 import { useConfig, useTheme } from '../../_mixins'
 import type { ThemeProps } from '../../_mixins'
 import { NBaseClose } from '../../_internal'
@@ -49,6 +60,12 @@ const tagProps = {
   }
 }
 
+interface TagInjection {
+  roundRef: Ref<boolean>
+}
+
+export const tagInjectionKey: InjectionKey<TagInjection> = Symbol('tag')
+
 export type TagProps = ExtractPublicPropTypes<typeof tagProps>
 
 export default defineComponent({
@@ -66,6 +83,9 @@ export default defineComponent({
       props,
       mergedClsPrefixRef
     )
+    provide(tagInjectionKey, {
+      roundRef: toRef(props, 'round')
+    })
     function handleClick (e: MouseEvent): void {
       if (!props.disabled) {
         if (props.checkable) {
@@ -142,37 +162,44 @@ export default defineComponent({
           }
         } = themeRef.value
         return {
-          '--bezier': cubicBezierEaseInOut,
-          '--border-radius': borderRadius,
-          '--border': border,
-          '--close-color': closeColor,
-          '--close-color-hover': closeColorHover,
-          '--close-color-pressed': closeColorPressed,
-          '--close-margin': closeMargin,
-          '--close-margin-rtl': closeMarginRtl,
-          '--close-size': closeSize,
-          '--color': color || typedColor,
-          '--color-checkable': colorCheckable,
-          '--color-checked': colorChecked,
-          '--color-checked-hover': colorCheckedHover,
-          '--color-checked-pressed': colorCheckedPressed,
-          '--color-hover-checkable': colorHoverCheckable,
-          '--color-pressed-checkable': colorPressedCheckable,
-          '--font-size': fontSize,
-          '--height': height,
-          '--opacity-disabled': opacityDisabled,
-          '--padding': padding,
-          '--text-color': textColor || typeTextColor,
-          '--text-color-checkable': textColorCheckable,
-          '--text-color-checked': textColorChecked,
-          '--text-color-hover-checkable': textColorHoverCheckable,
-          '--text-color-pressed-checkable': textColorPressedCheckable
+          '--n-avatar-size-override': `calc(${height} - 8px)`,
+          '--n-bezier': cubicBezierEaseInOut,
+          '--n-border-radius': borderRadius,
+          '--n-border': border,
+          '--n-close-color': closeColor,
+          '--n-close-color-hover': closeColorHover,
+          '--n-close-color-pressed': closeColorPressed,
+          '--n-close-color-disabled': closeColor,
+          '--n-close-margin': closeMargin,
+          '--n-close-margin-rtl': closeMarginRtl,
+          '--n-close-size': closeSize,
+          '--n-color': color || typedColor,
+          '--n-color-checkable': colorCheckable,
+          '--n-color-checked': colorChecked,
+          '--n-color-checked-hover': colorCheckedHover,
+          '--n-color-checked-pressed': colorCheckedPressed,
+          '--n-color-hover-checkable': colorHoverCheckable,
+          '--n-color-pressed-checkable': colorPressedCheckable,
+          '--n-font-size': fontSize,
+          '--n-height': height,
+          '--n-opacity-disabled': opacityDisabled,
+          '--n-padding': padding,
+          '--n-text-color': textColor || typeTextColor,
+          '--n-text-color-checkable': textColorCheckable,
+          '--n-text-color-checked': textColorChecked,
+          '--n-text-color-hover-checkable': textColorHoverCheckable,
+          '--n-text-color-pressed-checkable': textColorPressedCheckable
         }
       })
     }
   },
   render () {
-    const { mergedClsPrefix, rtlEnabled, color: { borderColor } = {} } = this
+    const {
+      mergedClsPrefix,
+      rtlEnabled,
+      color: { borderColor } = {},
+      $slots
+    } = this
     return (
       <div
         class={[
@@ -190,6 +217,13 @@ export default defineComponent({
         onMouseenter={this.onMouseenter}
         onMouseleave={this.onMouseleave}
       >
+        {$slots.avatar && (
+          <div class={`${mergedClsPrefix}-tag__avatar`}>
+            {{
+              default: $slots.avatar
+            }}
+          </div>
+        )}
         <span class={`${mergedClsPrefix}-tag__content`} ref="contentRef">
           {this.$slots}
         </span>

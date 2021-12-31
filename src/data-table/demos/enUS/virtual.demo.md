@@ -1,6 +1,8 @@
-# Large Data
+# Large data
 
 Use `virtual-scroll` to deal with large date. Note that you need to set `max-height` at the same time.
+
+**Tip: When `virtual-scroll` is `true`, `rowSpan` will not take effect.**
 
 ```html
 <n-data-table

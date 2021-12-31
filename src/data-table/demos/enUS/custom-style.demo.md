@@ -1,4 +1,4 @@
-# Custom Style
+# Custom style
 
 Row: Set `row-class-name` prop to assign a class name to certain rows.
 
@@ -68,13 +68,13 @@ export default defineComponent({
 ```
 
 ```css
-::v-deep(.too-old td) {
+:deep(.too-old td) {
   color: rgba(255, 0, 0, 0.75) !important;
 }
-::v-deep(.age) {
+:deep(.age) {
   color: rgba(0, 128, 0, 0.75) !important;
 }
-::v-deep(.too-old .age) {
+:deep(.too-old .age) {
   color: rgba(0, 0, 128, 0.75) !important;
 }
 ```

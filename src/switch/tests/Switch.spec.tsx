@@ -1,5 +1,5 @@
 import { mount } from '@vue/test-utils'
-import { h } from 'vue'
+import { CSSProperties, h } from 'vue'
 import { NSwitch } from '../index'
 
 describe('n-switch', () => {
@@ -56,6 +56,13 @@ describe('n-switch', () => {
     )
   })
 
+  it('should work with `round` prop', async () => {
+    const wrapper = mount(NSwitch)
+    expect(wrapper.find('.n-switch--round').exists()).toBe(true)
+    await wrapper.setProps({ round: false })
+    expect(wrapper.find('.n-switch--round').exists()).not.toBe(true)
+  })
+
   it('should work with `size` prop', async () => {
     const wrapper = mount(NSwitch)
 
@@ -92,6 +99,32 @@ describe('n-switch', () => {
       }
     })
     expect(wrapper.find('.n-base-loading').exists()).toBe(true)
+  })
+
+  it('should work with `rail-style` prop', () => {
+    const color = 'rgb(32, 128, 240)'
+    const railStyle = ({
+      focused,
+      checked
+    }: {
+      focused: boolean
+      checked: boolean
+    }): CSSProperties | string => {
+      const style: any = {}
+      if (!checked) {
+        style.background = color
+        if (focused) {
+          style.boxShadow = '0 0 0 2px #d0305040'
+        }
+      }
+      return style
+    }
+    const wrapper = mount(NSwitch, {
+      props: {
+        railStyle
+      }
+    })
+    expect(wrapper.find('.n-switch__rail').attributes('style')).toContain(color)
   })
 
   it('should work with slot', () => {

@@ -46,7 +46,8 @@ export const popoverBodyProps = {
   displayDirective: String as PropType<'if' | 'show'>,
   x: Number,
   y: Number,
-  filp: Boolean,
+  flip: Boolean,
+  shift: Boolean,
   overlap: Boolean,
   placement: String as PropType<FollowerPlacement>,
   width: [Number, String] as PropType<number | 'trigger'>,
@@ -117,10 +118,10 @@ export default defineComponent({
     const styleRef = computed(() => {
       return [
         {
-          width: props.width === 'trigger' ? '' : formatLength(props.width),
-          maxWidth: formatLength(props.maxWidth),
-          minWidth: formatLength(props.minWidth)
+          width: props.width === 'trigger' ? '' : formatLength(props.width)
         },
+        props.maxWidth ? { maxWidth: formatLength(props.maxWidth) } : {},
+        props.minWidth ? { minWidth: formatLength(props.minWidth) } : {},
         cssVarsRef.value
       ]
     })
@@ -142,22 +143,23 @@ export default defineComponent({
           arrowOffsetVertical
         }
       } = themeRef.value
+
       return {
-        '--box-shadow': boxShadow,
-        '--bezier': cubicBezierEaseInOut,
-        '--bezier-ease-in': cubicBezierEaseIn,
-        '--bezier-ease-out': cubicBezierEaseOut,
-        '--font-size': fontSize,
-        '--text-color': textColor,
-        '--color': color,
-        '--divider-color': dividerColor,
-        '--border-radius': borderRadius,
-        '--arrow-height': arrowHeight,
-        '--arrow-offset': arrowOffset,
-        '--arrow-offset-vertical': arrowOffsetVertical,
-        '--padding': padding,
-        '--space': space,
-        '--space-arrow': spaceArrow
+        '--n-box-shadow': boxShadow,
+        '--n-bezier': cubicBezierEaseInOut,
+        '--n-bezier-ease-in': cubicBezierEaseIn,
+        '--n-bezier-ease-out': cubicBezierEaseOut,
+        '--n-font-size': fontSize,
+        '--n-text-color': textColor,
+        '--n-color': color,
+        '--n-divider-color': dividerColor,
+        '--n-border-radius': borderRadius,
+        '--n-arrow-height': arrowHeight,
+        '--n-arrow-offset': arrowOffset,
+        '--n-arrow-offset-vertical': arrowOffsetVertical,
+        '--n-padding': padding,
+        '--n-space': space,
+        '--n-space-arrow': spaceArrow
       }
     })
     NPopover.setBodyInstance({
@@ -177,7 +179,6 @@ export default defineComponent({
       }
     })
     function syncPosition (): void {
-      // eslint-disable-next-line no-unused-expressions
       followerRef.value?.syncPosition()
     }
     function handleMouseEnter (e: MouseEvent): void {
@@ -302,6 +303,8 @@ export default defineComponent({
         to: this.adjustedTo,
         x: this.x,
         y: this.y,
+        flip: this.flip,
+        shift: this.shift,
         placement: this.placement,
         containerClass: this.namespace,
         ref: 'followerRef',

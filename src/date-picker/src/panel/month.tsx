@@ -1,10 +1,10 @@
-import { h, defineComponent, VNode } from 'vue'
+import { h, defineComponent, VNode, PropType } from 'vue'
 import { VirtualList } from 'vueuc'
 import { NButton, NxButton } from '../../../button'
 import { NBaseFocusDetector, NScrollbar } from '../../../_internal'
-import { useCalendar } from './use-calendar'
-import type { MonthItem, YearItem } from '../utils'
+import type { MonthItem, YearItem, QuarterItem } from '../utils'
 import { MONTH_ITEM_HEIGHT } from '../config'
+import { useCalendar, useCalendarProps } from './use-calendar'
 
 /**
  * Month Panel
@@ -14,11 +14,29 @@ import { MONTH_ITEM_HEIGHT } from '../config'
  */
 export default defineComponent({
   name: 'MonthPanel',
-  props: useCalendar.props,
+  props: {
+    ...useCalendarProps,
+    type: {
+      type: String as PropType<'month' | 'year' | 'quarter'>,
+      required: true
+    }
+  },
   setup (props) {
-    const useCalendarRef = useCalendar(props, 'month')
+    const useCalendarRef = useCalendar(props, props.type)
+    const getRenderContent = (
+      item: YearItem | MonthItem | QuarterItem
+    ): number | string => {
+      switch (item.type) {
+        case 'year':
+          return item.dateObject.year
+        case 'month':
+          return item.dateObject.month + 1
+        case 'quarter':
+          return `Q ${item.dateObject.quarter}`
+      }
+    }
     const renderItem = (
-      item: YearItem | MonthItem,
+      item: YearItem | MonthItem | QuarterItem,
       i: number,
       mergedClsPrefix: string
     ): VNode => {
@@ -31,9 +49,7 @@ export default defineComponent({
             `${mergedClsPrefix}-date-panel-month-calendar__picker-col-item`,
             {
               [`${mergedClsPrefix}-date-panel-month-calendar__picker-col-item--current`]:
-                item.type === 'month'
-                  ? item.isCurrentMonth
-                  : item.isCurrentYear,
+                item.isCurrent,
               [`${mergedClsPrefix}-date-panel-month-calendar__picker-col-item--selected`]:
                 item.selected,
               [`${mergedClsPrefix}-date-panel-month-calendar__picker-col-item--disabled`]:
@@ -42,22 +58,29 @@ export default defineComponent({
           ]}
           onClick={() => handleDateClick(item)}
         >
-          {item.type === 'month'
-            ? item.dateObject.month + 1
-            : item.dateObject.year}
+          {getRenderContent(item)}
         </div>
       )
     }
     return { ...useCalendarRef, renderItem }
   },
   render () {
-    const { mergedClsPrefix, mergedTheme, shortcuts, actions, renderItem } =
-      this
+    const {
+      mergedClsPrefix,
+      mergedTheme,
+      shortcuts,
+      actions,
+      renderItem,
+      type
+    } = this
     return (
       <div
         ref="selfRef"
         tabindex={0}
-        class={`${mergedClsPrefix}-date-panel ${mergedClsPrefix}-date-panel--month`}
+        class={[
+          `${mergedClsPrefix}-date-panel`,
+          `${mergedClsPrefix}-date-panel--month`
+        ]}
         onFocus={this.handlePanelFocus}
         onKeydown={this.handlePanelKeyDown}
       >
@@ -81,6 +104,7 @@ export default defineComponent({
                   showScrollbar={false}
                   keyField="ts"
                   onScroll={this.handleVirtualListScroll}
+                  paddingBottom={4}
                 >
                   {{
                     default: ({
@@ -97,26 +121,29 @@ export default defineComponent({
               )
             }}
           </NScrollbar>
-          <div
-            class={`${mergedClsPrefix}-date-panel-month-calendar__picker-col`}
-          >
-            <NScrollbar
-              ref="monthScrollRef"
-              theme={mergedTheme.peers.Scrollbar}
-              themeOverrides={mergedTheme.peerOverrides.Scrollbar}
+          {type === 'month' || type === 'quarter' ? (
+            <div
+              class={`${mergedClsPrefix}-date-panel-month-calendar__picker-col`}
             >
-              {{
-                default: () => [
-                  this.monthArray.map((monthItem, i) =>
-                    renderItem(monthItem, i, mergedClsPrefix)
-                  ),
-                  <div
-                    class={`${mergedClsPrefix}-date-panel-month-calendar__padding`}
-                  />
-                ]
-              }}
-            </NScrollbar>
-          </div>
+              <NScrollbar
+                ref="monthScrollRef"
+                theme={mergedTheme.peers.Scrollbar}
+                themeOverrides={mergedTheme.peerOverrides.Scrollbar}
+              >
+                {{
+                  default: () => [
+                    (type === 'month'
+                      ? this.monthArray
+                      : this.quarterArray
+                    ).map((item, i) => renderItem(item, i, mergedClsPrefix)),
+                    <div
+                      class={`${mergedClsPrefix}-date-panel-${type}-calendar__padding`}
+                    />
+                  ]
+                }}
+              </NScrollbar>
+            </div>
+          ) : null}
         </div>
         {this.datePickerSlots.footer ? (
           <div class={`${mergedClsPrefix}-date-panel-footer`}>

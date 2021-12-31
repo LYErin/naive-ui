@@ -3,7 +3,7 @@
 exports[`n-dropdown dropdown clickoutside 1`] = `
 <div
   class="n-dropdown-menu n-popover n-dropdown"
-  style="--box-shadow: 0 3px 6px -4px rgba(0, 0, 0, .12), 0 6px 16px 0 rgba(0, 0, 0, .08), 0 9px 28px 8px rgba(0, 0, 0, .05); --bezier: cubic-bezier(.4, 0, .2, 1); --bezier-ease-in: cubic-bezier(.4, 0, 1, 1); --bezier-ease-out: cubic-bezier(0, 0, .2, 1); --font-size: 14px; --text-color: rgb(51, 54, 57); --color: #fff; --divider-color: rgb(239, 239, 245); --border-radius: 3px; --arrow-height: 6px; --arrow-offset: 10px; --arrow-offset-vertical: 10px; --padding: 4px 0; --space: 6px; --space-arrow: 10px; --option-height: 34px; --option-prefix-width: 14px; --option-icon-prefix-width: 36px; --option-suffix-width: 14px; --option-icon-suffix-width: 32px; --option-icon-size: 16px; --option-opacity-disabled: 0.5; --option-color-hover: rgb(243, 243, 245); --option-color-active: rgba(24, 160, 88, 0.1); --option-text-color: rgb(51, 54, 57); --option-text-color-hover: rgb(51, 54, 57); --option-text-color-active: #18a058; --option-text-color-child-active: #18a058; --prefix-color: rgb(51, 54, 57); --suffix-color: rgb(51, 54, 57); --group-header-text-color: rgb(158, 164, 170);"
+  style="--n-box-shadow: 0 3px 6px -4px rgba(0, 0, 0, .12), 0 6px 16px 0 rgba(0, 0, 0, .08), 0 9px 28px 8px rgba(0, 0, 0, .05); --n-bezier: cubic-bezier(.4, 0, .2, 1); --n-bezier-ease-in: cubic-bezier(.4, 0, 1, 1); --n-bezier-ease-out: cubic-bezier(0, 0, .2, 1); --n-font-size: 14px; --n-text-color: rgb(51, 54, 57); --n-color: #fff; --n-divider-color: rgb(239, 239, 245); --n-border-radius: 3px; --n-arrow-height: 6px; --n-arrow-offset: 10px; --n-arrow-offset-vertical: 10px; --n-padding: 4px 0; --n-space: 6px; --n-space-arrow: 10px; --n-option-height: 34px; --n-option-prefix-width: 14px; --n-option-icon-prefix-width: 36px; --n-option-suffix-width: 14px; --n-option-icon-suffix-width: 32px; --n-option-icon-size: 16px; --n-option-opacity-disabled: 0.5; --n-option-color-hover: rgb(243, 243, 245); --n-option-color-active: rgba(24, 160, 88, 0.1); --n-option-text-color: rgb(51, 54, 57); --n-option-text-color-hover: rgb(51, 54, 57); --n-option-text-color-active: #18a058; --n-option-text-color-child-active: #18a058; --n-prefix-color: rgb(51, 54, 57); --n-suffix-color: rgb(51, 54, 57); --n-group-header-text-color: rgb(118, 124, 130);"
 >
   
   
@@ -14,18 +14,18 @@ exports[`n-dropdown dropdown clickoutside 1`] = `
       class="n-dropdown-option-body n-dropdown-option-body--group"
     >
       <div
-        __dropdown-option="true"
         class="n-dropdown-option-body__prefix n-dropdown-option-body__prefix--show-icon"
+        data-dropdown-option="true"
       />
       <div
-        __dropdown-option="true"
         class="n-dropdown-option-body__label"
+        data-dropdown-option="true"
       >
         主角和吃的
       </div>
       <div
-        __dropdown-option="true"
         class="n-dropdown-option-body__suffix n-dropdown-option-body__suffix--has-submenu"
+        data-dropdown-option="true"
       />
     </div>
   </div>
@@ -37,20 +37,20 @@ exports[`n-dropdown dropdown clickoutside 1`] = `
       class="n-dropdown-option-body"
     >
       <div
-        __dropdown-option="true"
         class="n-dropdown-option-body__prefix n-dropdown-option-body__prefix--show-icon"
+        data-dropdown-option="true"
       >
         <!---->
       </div>
       <div
-        __dropdown-option="true"
         class="n-dropdown-option-body__label"
+        data-dropdown-option="true"
       >
         杰·盖茨比
       </div>
       <div
-        __dropdown-option="true"
         class="n-dropdown-option-body__suffix n-dropdown-option-body__suffix--has-submenu"
+        data-dropdown-option="true"
       />
     </div>
     <!---->
@@ -65,13 +65,13 @@ exports[`n-dropdown dropdown clickoutside 1`] = `
       class="n-dropdown-option-body n-dropdown-option-body--disabled"
     >
       <div
-        __dropdown-option="true"
         class="n-dropdown-option-body__prefix n-dropdown-option-body__prefix--show-icon"
+        data-dropdown-option="true"
       >
         <i
           class="n-icon"
           role="img"
-          style="--bezier: cubic-bezier(.4, 0, .2, 1);"
+          style="--n-bezier: cubic-bezier(.4, 0, .2, 1);"
         >
           <svg
             viewBox="0 0 512 512"
@@ -153,14 +153,14 @@ exports[`n-dropdown dropdown clickoutside 1`] = `
         </i>
       </div>
       <div
-        __dropdown-option="true"
         class="n-dropdown-option-body__label"
+        data-dropdown-option="true"
       >
         黛西·布坎南
       </div>
       <div
-        __dropdown-option="true"
         class="n-dropdown-option-body__suffix n-dropdown-option-body__suffix--has-submenu"
+        data-dropdown-option="true"
       />
     </div>
     <!---->
@@ -177,25 +177,25 @@ exports[`n-dropdown dropdown clickoutside 1`] = `
       class="n-dropdown-option-body"
     >
       <div
-        __dropdown-option="true"
         class="n-dropdown-option-body__prefix n-dropdown-option-body__prefix--show-icon"
+        data-dropdown-option="true"
       >
         <!---->
       </div>
       <div
-        __dropdown-option="true"
         class="n-dropdown-option-body__label"
+        data-dropdown-option="true"
       >
         其他角色
       </div>
       <div
-        __dropdown-option="true"
         class="n-dropdown-option-body__suffix n-dropdown-option-body__suffix--has-submenu"
+        data-dropdown-option="true"
       >
         <i
           class="n-icon"
           role="img"
-          style="--bezier: cubic-bezier(.4, 0, .2, 1);"
+          style="--n-bezier: cubic-bezier(.4, 0, .2, 1);"
         >
           <svg
             fill="none"
@@ -217,7 +217,7 @@ exports[`n-dropdown dropdown clickoutside 1`] = `
       
       <div
         class="v-binder-follower-container"
-        style="z-index: 2004;"
+        style="z-index: 2000;"
       >
         <div
           class="v-binder-follower-content"
@@ -245,7 +245,7 @@ exports[`n-dropdown dropdown clickoutside 1`] = `
 exports[`n-dropdown inverted style 1`] = `
 <div
   class="n-dropdown-menu n-popover n-dropdown"
-  style="--box-shadow: 0 3px 6px -4px rgba(0, 0, 0, .12), 0 6px 16px 0 rgba(0, 0, 0, .08), 0 9px 28px 8px rgba(0, 0, 0, .05); --bezier: cubic-bezier(.4, 0, .2, 1); --bezier-ease-in: cubic-bezier(.4, 0, 1, 1); --bezier-ease-out: cubic-bezier(0, 0, .2, 1); --font-size: 14px; --text-color: rgb(51, 54, 57); --color: rgb(0, 20, 40); --divider-color: rgb(239, 239, 245); --border-radius: 3px; --arrow-height: 6px; --arrow-offset: 10px; --arrow-offset-vertical: 10px; --padding: 4px 0; --space: 6px; --space-arrow: 10px; --option-height: 34px; --option-prefix-width: 14px; --option-icon-prefix-width: 36px; --option-suffix-width: 14px; --option-icon-suffix-width: 32px; --option-icon-size: 16px; --option-opacity-disabled: 0.5; --option-color-hover: #18a058; --option-color-active: #18a058; --option-text-color: #BBB; --option-text-color-hover: #FFF; --option-text-color-active: #FFF; --option-text-color-child-active: #FFF; --prefix-color: #BBB; --suffix-color: #BBB; --group-header-text-color: #AAA;"
+  style="--n-box-shadow: 0 3px 6px -4px rgba(0, 0, 0, .12), 0 6px 16px 0 rgba(0, 0, 0, .08), 0 9px 28px 8px rgba(0, 0, 0, .05); --n-bezier: cubic-bezier(.4, 0, .2, 1); --n-bezier-ease-in: cubic-bezier(.4, 0, 1, 1); --n-bezier-ease-out: cubic-bezier(0, 0, .2, 1); --n-font-size: 14px; --n-text-color: rgb(51, 54, 57); --n-color: rgb(0, 20, 40); --n-divider-color: rgb(239, 239, 245); --n-border-radius: 3px; --n-arrow-height: 6px; --n-arrow-offset: 10px; --n-arrow-offset-vertical: 10px; --n-padding: 4px 0; --n-space: 6px; --n-space-arrow: 10px; --n-option-height: 34px; --n-option-prefix-width: 14px; --n-option-icon-prefix-width: 36px; --n-option-suffix-width: 14px; --n-option-icon-suffix-width: 32px; --n-option-icon-size: 16px; --n-option-opacity-disabled: 0.5; --n-option-color-hover: #18a058; --n-option-color-active: #18a058; --n-option-text-color: #BBB; --n-option-text-color-hover: #FFF; --n-option-text-color-active: #FFF; --n-option-text-color-child-active: #FFF; --n-prefix-color: #BBB; --n-suffix-color: #BBB; --n-group-header-text-color: #AAA;"
 >
   
   
@@ -256,18 +256,18 @@ exports[`n-dropdown inverted style 1`] = `
       class="n-dropdown-option-body n-dropdown-option-body--group"
     >
       <div
-        __dropdown-option="true"
         class="n-dropdown-option-body__prefix n-dropdown-option-body__prefix--show-icon"
+        data-dropdown-option="true"
       />
       <div
-        __dropdown-option="true"
         class="n-dropdown-option-body__label"
+        data-dropdown-option="true"
       >
         主角和吃的
       </div>
       <div
-        __dropdown-option="true"
         class="n-dropdown-option-body__suffix n-dropdown-option-body__suffix--has-submenu"
+        data-dropdown-option="true"
       />
     </div>
   </div>
@@ -279,20 +279,20 @@ exports[`n-dropdown inverted style 1`] = `
       class="n-dropdown-option-body"
     >
       <div
-        __dropdown-option="true"
         class="n-dropdown-option-body__prefix n-dropdown-option-body__prefix--show-icon"
+        data-dropdown-option="true"
       >
         <!---->
       </div>
       <div
-        __dropdown-option="true"
         class="n-dropdown-option-body__label"
+        data-dropdown-option="true"
       >
         杰·盖茨比
       </div>
       <div
-        __dropdown-option="true"
         class="n-dropdown-option-body__suffix n-dropdown-option-body__suffix--has-submenu"
+        data-dropdown-option="true"
       />
     </div>
     <!---->
@@ -307,13 +307,13 @@ exports[`n-dropdown inverted style 1`] = `
       class="n-dropdown-option-body n-dropdown-option-body--disabled"
     >
       <div
-        __dropdown-option="true"
         class="n-dropdown-option-body__prefix n-dropdown-option-body__prefix--show-icon"
+        data-dropdown-option="true"
       >
         <i
           class="n-icon"
           role="img"
-          style="--bezier: cubic-bezier(.4, 0, .2, 1);"
+          style="--n-bezier: cubic-bezier(.4, 0, .2, 1);"
         >
           <svg
             viewBox="0 0 512 512"
@@ -395,14 +395,14 @@ exports[`n-dropdown inverted style 1`] = `
         </i>
       </div>
       <div
-        __dropdown-option="true"
         class="n-dropdown-option-body__label"
+        data-dropdown-option="true"
       >
         黛西·布坎南
       </div>
       <div
-        __dropdown-option="true"
         class="n-dropdown-option-body__suffix n-dropdown-option-body__suffix--has-submenu"
+        data-dropdown-option="true"
       />
     </div>
     <!---->
@@ -419,25 +419,25 @@ exports[`n-dropdown inverted style 1`] = `
       class="n-dropdown-option-body"
     >
       <div
-        __dropdown-option="true"
         class="n-dropdown-option-body__prefix n-dropdown-option-body__prefix--show-icon"
+        data-dropdown-option="true"
       >
         <!---->
       </div>
       <div
-        __dropdown-option="true"
         class="n-dropdown-option-body__label"
+        data-dropdown-option="true"
       >
         其他角色
       </div>
       <div
-        __dropdown-option="true"
         class="n-dropdown-option-body__suffix n-dropdown-option-body__suffix--has-submenu"
+        data-dropdown-option="true"
       >
         <i
           class="n-icon"
           role="img"
-          style="--bezier: cubic-bezier(.4, 0, .2, 1);"
+          style="--n-bezier: cubic-bezier(.4, 0, .2, 1);"
         >
           <svg
             fill="none"
@@ -468,7 +468,7 @@ exports[`n-dropdown inverted style 1`] = `
 exports[`n-dropdown should work with \`render-icon\` props 1`] = `
 <div
   class="n-dropdown-menu n-popover n-dropdown"
-  style="--box-shadow: 0 3px 6px -4px rgba(0, 0, 0, .12), 0 6px 16px 0 rgba(0, 0, 0, .08), 0 9px 28px 8px rgba(0, 0, 0, .05); --bezier: cubic-bezier(.4, 0, .2, 1); --bezier-ease-in: cubic-bezier(.4, 0, 1, 1); --bezier-ease-out: cubic-bezier(0, 0, .2, 1); --font-size: 14px; --text-color: rgb(51, 54, 57); --color: #fff; --divider-color: rgb(239, 239, 245); --border-radius: 3px; --arrow-height: 6px; --arrow-offset: 10px; --arrow-offset-vertical: 10px; --padding: 4px 0; --space: 6px; --space-arrow: 10px; --option-height: 34px; --option-prefix-width: 14px; --option-icon-prefix-width: 36px; --option-suffix-width: 14px; --option-icon-suffix-width: 32px; --option-icon-size: 16px; --option-opacity-disabled: 0.5; --option-color-hover: rgb(243, 243, 245); --option-color-active: rgba(24, 160, 88, 0.1); --option-text-color: rgb(51, 54, 57); --option-text-color-hover: rgb(51, 54, 57); --option-text-color-active: #18a058; --option-text-color-child-active: #18a058; --prefix-color: rgb(51, 54, 57); --suffix-color: rgb(51, 54, 57); --group-header-text-color: rgb(158, 164, 170);"
+  style="--n-box-shadow: 0 3px 6px -4px rgba(0, 0, 0, .12), 0 6px 16px 0 rgba(0, 0, 0, .08), 0 9px 28px 8px rgba(0, 0, 0, .05); --n-bezier: cubic-bezier(.4, 0, .2, 1); --n-bezier-ease-in: cubic-bezier(.4, 0, 1, 1); --n-bezier-ease-out: cubic-bezier(0, 0, .2, 1); --n-font-size: 14px; --n-text-color: rgb(51, 54, 57); --n-color: #fff; --n-divider-color: rgb(239, 239, 245); --n-border-radius: 3px; --n-arrow-height: 6px; --n-arrow-offset: 10px; --n-arrow-offset-vertical: 10px; --n-padding: 4px 0; --n-space: 6px; --n-space-arrow: 10px; --n-option-height: 34px; --n-option-prefix-width: 14px; --n-option-icon-prefix-width: 36px; --n-option-suffix-width: 14px; --n-option-icon-suffix-width: 32px; --n-option-icon-size: 16px; --n-option-opacity-disabled: 0.5; --n-option-color-hover: rgb(243, 243, 245); --n-option-color-active: rgba(24, 160, 88, 0.1); --n-option-text-color: rgb(51, 54, 57); --n-option-text-color-hover: rgb(51, 54, 57); --n-option-text-color-active: #18a058; --n-option-text-color-child-active: #18a058; --n-prefix-color: rgb(51, 54, 57); --n-suffix-color: rgb(51, 54, 57); --n-group-header-text-color: rgb(118, 124, 130);"
 >
   
   
@@ -479,18 +479,18 @@ exports[`n-dropdown should work with \`render-icon\` props 1`] = `
       class="n-dropdown-option-body n-dropdown-option-body--group"
     >
       <div
-        __dropdown-option="true"
         class="n-dropdown-option-body__prefix n-dropdown-option-body__prefix--show-icon"
+        data-dropdown-option="true"
       />
       <div
-        __dropdown-option="true"
         class="n-dropdown-option-body__label"
+        data-dropdown-option="true"
       >
         主角和吃的
       </div>
       <div
-        __dropdown-option="true"
         class="n-dropdown-option-body__suffix n-dropdown-option-body__suffix--has-submenu"
+        data-dropdown-option="true"
       />
     </div>
   </div>
@@ -502,13 +502,13 @@ exports[`n-dropdown should work with \`render-icon\` props 1`] = `
       class="n-dropdown-option-body"
     >
       <div
-        __dropdown-option="true"
         class="n-dropdown-option-body__prefix n-dropdown-option-body__prefix--show-icon"
+        data-dropdown-option="true"
       >
         <i
           class="n-icon"
           role="img"
-          style="--bezier: cubic-bezier(.4, 0, .2, 1);"
+          style="--n-bezier: cubic-bezier(.4, 0, .2, 1);"
         >
           <svg
             viewBox="0 0 512 512"
@@ -590,14 +590,14 @@ exports[`n-dropdown should work with \`render-icon\` props 1`] = `
         </i>
       </div>
       <div
-        __dropdown-option="true"
         class="n-dropdown-option-body__label"
+        data-dropdown-option="true"
       >
         杰·盖茨比
       </div>
       <div
-        __dropdown-option="true"
         class="n-dropdown-option-body__suffix n-dropdown-option-body__suffix--has-submenu"
+        data-dropdown-option="true"
       />
     </div>
     <!---->
@@ -612,13 +612,13 @@ exports[`n-dropdown should work with \`render-icon\` props 1`] = `
       class="n-dropdown-option-body n-dropdown-option-body--disabled"
     >
       <div
-        __dropdown-option="true"
         class="n-dropdown-option-body__prefix n-dropdown-option-body__prefix--show-icon"
+        data-dropdown-option="true"
       >
         <i
           class="n-icon"
           role="img"
-          style="--bezier: cubic-bezier(.4, 0, .2, 1);"
+          style="--n-bezier: cubic-bezier(.4, 0, .2, 1);"
         >
           <svg
             viewBox="0 0 512 512"
@@ -700,14 +700,14 @@ exports[`n-dropdown should work with \`render-icon\` props 1`] = `
         </i>
       </div>
       <div
-        __dropdown-option="true"
         class="n-dropdown-option-body__label"
+        data-dropdown-option="true"
       >
         黛西·布坎南
       </div>
       <div
-        __dropdown-option="true"
         class="n-dropdown-option-body__suffix n-dropdown-option-body__suffix--has-submenu"
+        data-dropdown-option="true"
       />
     </div>
     <!---->
@@ -724,13 +724,13 @@ exports[`n-dropdown should work with \`render-icon\` props 1`] = `
       class="n-dropdown-option-body"
     >
       <div
-        __dropdown-option="true"
         class="n-dropdown-option-body__prefix n-dropdown-option-body__prefix--show-icon"
+        data-dropdown-option="true"
       >
         <i
           class="n-icon"
           role="img"
-          style="--bezier: cubic-bezier(.4, 0, .2, 1);"
+          style="--n-bezier: cubic-bezier(.4, 0, .2, 1);"
         >
           <svg
             viewBox="0 0 512 512"
@@ -812,19 +812,19 @@ exports[`n-dropdown should work with \`render-icon\` props 1`] = `
         </i>
       </div>
       <div
-        __dropdown-option="true"
         class="n-dropdown-option-body__label"
+        data-dropdown-option="true"
       >
         其他角色
       </div>
       <div
-        __dropdown-option="true"
         class="n-dropdown-option-body__suffix n-dropdown-option-body__suffix--has-submenu"
+        data-dropdown-option="true"
       >
         <i
           class="n-icon"
           role="img"
-          style="--bezier: cubic-bezier(.4, 0, .2, 1);"
+          style="--n-bezier: cubic-bezier(.4, 0, .2, 1);"
         >
           <svg
             fill="none"
@@ -855,7 +855,7 @@ exports[`n-dropdown should work with \`render-icon\` props 1`] = `
 exports[`n-dropdown should work with \`render-label\` props 1`] = `
 <div
   class="n-dropdown-menu n-popover n-dropdown"
-  style="--box-shadow: 0 3px 6px -4px rgba(0, 0, 0, .12), 0 6px 16px 0 rgba(0, 0, 0, .08), 0 9px 28px 8px rgba(0, 0, 0, .05); --bezier: cubic-bezier(.4, 0, .2, 1); --bezier-ease-in: cubic-bezier(.4, 0, 1, 1); --bezier-ease-out: cubic-bezier(0, 0, .2, 1); --font-size: 14px; --text-color: rgb(51, 54, 57); --color: #fff; --divider-color: rgb(239, 239, 245); --border-radius: 3px; --arrow-height: 6px; --arrow-offset: 10px; --arrow-offset-vertical: 10px; --padding: 4px 0; --space: 6px; --space-arrow: 10px; --option-height: 34px; --option-prefix-width: 14px; --option-icon-prefix-width: 36px; --option-suffix-width: 14px; --option-icon-suffix-width: 32px; --option-icon-size: 16px; --option-opacity-disabled: 0.5; --option-color-hover: rgb(243, 243, 245); --option-color-active: rgba(24, 160, 88, 0.1); --option-text-color: rgb(51, 54, 57); --option-text-color-hover: rgb(51, 54, 57); --option-text-color-active: #18a058; --option-text-color-child-active: #18a058; --prefix-color: rgb(51, 54, 57); --suffix-color: rgb(51, 54, 57); --group-header-text-color: rgb(158, 164, 170);"
+  style="--n-box-shadow: 0 3px 6px -4px rgba(0, 0, 0, .12), 0 6px 16px 0 rgba(0, 0, 0, .08), 0 9px 28px 8px rgba(0, 0, 0, .05); --n-bezier: cubic-bezier(.4, 0, .2, 1); --n-bezier-ease-in: cubic-bezier(.4, 0, 1, 1); --n-bezier-ease-out: cubic-bezier(0, 0, .2, 1); --n-font-size: 14px; --n-text-color: rgb(51, 54, 57); --n-color: #fff; --n-divider-color: rgb(239, 239, 245); --n-border-radius: 3px; --n-arrow-height: 6px; --n-arrow-offset: 10px; --n-arrow-offset-vertical: 10px; --n-padding: 4px 0; --n-space: 6px; --n-space-arrow: 10px; --n-option-height: 34px; --n-option-prefix-width: 14px; --n-option-icon-prefix-width: 36px; --n-option-suffix-width: 14px; --n-option-icon-suffix-width: 32px; --n-option-icon-size: 16px; --n-option-opacity-disabled: 0.5; --n-option-color-hover: rgb(243, 243, 245); --n-option-color-active: rgba(24, 160, 88, 0.1); --n-option-text-color: rgb(51, 54, 57); --n-option-text-color-hover: rgb(51, 54, 57); --n-option-text-color-active: #18a058; --n-option-text-color-child-active: #18a058; --n-prefix-color: rgb(51, 54, 57); --n-suffix-color: rgb(51, 54, 57); --n-group-header-text-color: rgb(118, 124, 130);"
 >
   
   
@@ -866,12 +866,12 @@ exports[`n-dropdown should work with \`render-label\` props 1`] = `
       class="n-dropdown-option-body n-dropdown-option-body--group"
     >
       <div
-        __dropdown-option="true"
         class="n-dropdown-option-body__prefix n-dropdown-option-body__prefix--show-icon"
+        data-dropdown-option="true"
       />
       <div
-        __dropdown-option="true"
         class="n-dropdown-option-body__label"
+        data-dropdown-option="true"
       >
         <a
           href="renderLabel"
@@ -880,8 +880,8 @@ exports[`n-dropdown should work with \`render-label\` props 1`] = `
         </a>
       </div>
       <div
-        __dropdown-option="true"
         class="n-dropdown-option-body__suffix n-dropdown-option-body__suffix--has-submenu"
+        data-dropdown-option="true"
       />
     </div>
   </div>
@@ -893,14 +893,14 @@ exports[`n-dropdown should work with \`render-label\` props 1`] = `
       class="n-dropdown-option-body"
     >
       <div
-        __dropdown-option="true"
         class="n-dropdown-option-body__prefix n-dropdown-option-body__prefix--show-icon"
+        data-dropdown-option="true"
       >
         <!---->
       </div>
       <div
-        __dropdown-option="true"
         class="n-dropdown-option-body__label"
+        data-dropdown-option="true"
       >
         <a
           href="renderLabel"
@@ -909,8 +909,8 @@ exports[`n-dropdown should work with \`render-label\` props 1`] = `
         </a>
       </div>
       <div
-        __dropdown-option="true"
         class="n-dropdown-option-body__suffix n-dropdown-option-body__suffix--has-submenu"
+        data-dropdown-option="true"
       />
     </div>
     <!---->
@@ -925,13 +925,13 @@ exports[`n-dropdown should work with \`render-label\` props 1`] = `
       class="n-dropdown-option-body n-dropdown-option-body--disabled"
     >
       <div
-        __dropdown-option="true"
         class="n-dropdown-option-body__prefix n-dropdown-option-body__prefix--show-icon"
+        data-dropdown-option="true"
       >
         <i
           class="n-icon"
           role="img"
-          style="--bezier: cubic-bezier(.4, 0, .2, 1);"
+          style="--n-bezier: cubic-bezier(.4, 0, .2, 1);"
         >
           <svg
             viewBox="0 0 512 512"
@@ -1013,8 +1013,8 @@ exports[`n-dropdown should work with \`render-label\` props 1`] = `
         </i>
       </div>
       <div
-        __dropdown-option="true"
         class="n-dropdown-option-body__label"
+        data-dropdown-option="true"
       >
         <a
           href="renderLabel"
@@ -1023,8 +1023,8 @@ exports[`n-dropdown should work with \`render-label\` props 1`] = `
         </a>
       </div>
       <div
-        __dropdown-option="true"
         class="n-dropdown-option-body__suffix n-dropdown-option-body__suffix--has-submenu"
+        data-dropdown-option="true"
       />
     </div>
     <!---->
@@ -1041,14 +1041,14 @@ exports[`n-dropdown should work with \`render-label\` props 1`] = `
       class="n-dropdown-option-body"
     >
       <div
-        __dropdown-option="true"
         class="n-dropdown-option-body__prefix n-dropdown-option-body__prefix--show-icon"
+        data-dropdown-option="true"
       >
         <!---->
       </div>
       <div
-        __dropdown-option="true"
         class="n-dropdown-option-body__label"
+        data-dropdown-option="true"
       >
         <a
           href="renderLabel"
@@ -1057,13 +1057,13 @@ exports[`n-dropdown should work with \`render-label\` props 1`] = `
         </a>
       </div>
       <div
-        __dropdown-option="true"
         class="n-dropdown-option-body__suffix n-dropdown-option-body__suffix--has-submenu"
+        data-dropdown-option="true"
       >
         <i
           class="n-icon"
           role="img"
-          style="--bezier: cubic-bezier(.4, 0, .2, 1);"
+          style="--n-bezier: cubic-bezier(.4, 0, .2, 1);"
         >
           <svg
             fill="none"
@@ -1096,7 +1096,7 @@ exports[`n-dropdown shows arrow 1`] = `null`;
 exports[`n-dropdown shows menu after click 1`] = `
 <div
   class="n-dropdown-menu n-popover n-dropdown"
-  style="--box-shadow: 0 3px 6px -4px rgba(0, 0, 0, .12), 0 6px 16px 0 rgba(0, 0, 0, .08), 0 9px 28px 8px rgba(0, 0, 0, .05); --bezier: cubic-bezier(.4, 0, .2, 1); --bezier-ease-in: cubic-bezier(.4, 0, 1, 1); --bezier-ease-out: cubic-bezier(0, 0, .2, 1); --font-size: 14px; --text-color: rgb(51, 54, 57); --color: #fff; --divider-color: rgb(239, 239, 245); --border-radius: 3px; --arrow-height: 6px; --arrow-offset: 10px; --arrow-offset-vertical: 10px; --padding: 4px 0; --space: 6px; --space-arrow: 10px; --option-height: 34px; --option-prefix-width: 14px; --option-icon-prefix-width: 36px; --option-suffix-width: 14px; --option-icon-suffix-width: 32px; --option-icon-size: 16px; --option-opacity-disabled: 0.5; --option-color-hover: rgb(243, 243, 245); --option-color-active: rgba(24, 160, 88, 0.1); --option-text-color: rgb(51, 54, 57); --option-text-color-hover: rgb(51, 54, 57); --option-text-color-active: #18a058; --option-text-color-child-active: #18a058; --prefix-color: rgb(51, 54, 57); --suffix-color: rgb(51, 54, 57); --group-header-text-color: rgb(158, 164, 170);"
+  style="--n-box-shadow: 0 3px 6px -4px rgba(0, 0, 0, .12), 0 6px 16px 0 rgba(0, 0, 0, .08), 0 9px 28px 8px rgba(0, 0, 0, .05); --n-bezier: cubic-bezier(.4, 0, .2, 1); --n-bezier-ease-in: cubic-bezier(.4, 0, 1, 1); --n-bezier-ease-out: cubic-bezier(0, 0, .2, 1); --n-font-size: 14px; --n-text-color: rgb(51, 54, 57); --n-color: #fff; --n-divider-color: rgb(239, 239, 245); --n-border-radius: 3px; --n-arrow-height: 6px; --n-arrow-offset: 10px; --n-arrow-offset-vertical: 10px; --n-padding: 4px 0; --n-space: 6px; --n-space-arrow: 10px; --n-option-height: 34px; --n-option-prefix-width: 14px; --n-option-icon-prefix-width: 36px; --n-option-suffix-width: 14px; --n-option-icon-suffix-width: 32px; --n-option-icon-size: 16px; --n-option-opacity-disabled: 0.5; --n-option-color-hover: rgb(243, 243, 245); --n-option-color-active: rgba(24, 160, 88, 0.1); --n-option-text-color: rgb(51, 54, 57); --n-option-text-color-hover: rgb(51, 54, 57); --n-option-text-color-active: #18a058; --n-option-text-color-child-active: #18a058; --n-prefix-color: rgb(51, 54, 57); --n-suffix-color: rgb(51, 54, 57); --n-group-header-text-color: rgb(118, 124, 130);"
 >
   
   
@@ -1107,18 +1107,18 @@ exports[`n-dropdown shows menu after click 1`] = `
       class="n-dropdown-option-body n-dropdown-option-body--group"
     >
       <div
-        __dropdown-option="true"
         class="n-dropdown-option-body__prefix n-dropdown-option-body__prefix--show-icon"
+        data-dropdown-option="true"
       />
       <div
-        __dropdown-option="true"
         class="n-dropdown-option-body__label"
+        data-dropdown-option="true"
       >
         主角和吃的
       </div>
       <div
-        __dropdown-option="true"
         class="n-dropdown-option-body__suffix n-dropdown-option-body__suffix--has-submenu"
+        data-dropdown-option="true"
       />
     </div>
   </div>
@@ -1130,20 +1130,20 @@ exports[`n-dropdown shows menu after click 1`] = `
       class="n-dropdown-option-body"
     >
       <div
-        __dropdown-option="true"
         class="n-dropdown-option-body__prefix n-dropdown-option-body__prefix--show-icon"
+        data-dropdown-option="true"
       >
         <!---->
       </div>
       <div
-        __dropdown-option="true"
         class="n-dropdown-option-body__label"
+        data-dropdown-option="true"
       >
         杰·盖茨比
       </div>
       <div
-        __dropdown-option="true"
         class="n-dropdown-option-body__suffix n-dropdown-option-body__suffix--has-submenu"
+        data-dropdown-option="true"
       />
     </div>
     <!---->
@@ -1158,13 +1158,13 @@ exports[`n-dropdown shows menu after click 1`] = `
       class="n-dropdown-option-body n-dropdown-option-body--disabled"
     >
       <div
-        __dropdown-option="true"
         class="n-dropdown-option-body__prefix n-dropdown-option-body__prefix--show-icon"
+        data-dropdown-option="true"
       >
         <i
           class="n-icon"
           role="img"
-          style="--bezier: cubic-bezier(.4, 0, .2, 1);"
+          style="--n-bezier: cubic-bezier(.4, 0, .2, 1);"
         >
           <svg
             viewBox="0 0 512 512"
@@ -1246,14 +1246,14 @@ exports[`n-dropdown shows menu after click 1`] = `
         </i>
       </div>
       <div
-        __dropdown-option="true"
         class="n-dropdown-option-body__label"
+        data-dropdown-option="true"
       >
         黛西·布坎南
       </div>
       <div
-        __dropdown-option="true"
         class="n-dropdown-option-body__suffix n-dropdown-option-body__suffix--has-submenu"
+        data-dropdown-option="true"
       />
     </div>
     <!---->
@@ -1270,25 +1270,25 @@ exports[`n-dropdown shows menu after click 1`] = `
       class="n-dropdown-option-body"
     >
       <div
-        __dropdown-option="true"
         class="n-dropdown-option-body__prefix n-dropdown-option-body__prefix--show-icon"
+        data-dropdown-option="true"
       >
         <!---->
       </div>
       <div
-        __dropdown-option="true"
         class="n-dropdown-option-body__label"
+        data-dropdown-option="true"
       >
         其他角色
       </div>
       <div
-        __dropdown-option="true"
         class="n-dropdown-option-body__suffix n-dropdown-option-body__suffix--has-submenu"
+        data-dropdown-option="true"
       >
         <i
           class="n-icon"
           role="img"
-          style="--bezier: cubic-bezier(.4, 0, .2, 1);"
+          style="--n-bezier: cubic-bezier(.4, 0, .2, 1);"
         >
           <svg
             fill="none"
